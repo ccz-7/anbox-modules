@@ -2240,7 +2240,7 @@ static void binder_deferred_fd_close(int fd)
     twcb->file = file_close_fd(fd);
 #elif (LINUX_VERSION_CODE >= KERNEL_VERSION(5,19,0))
     twcb->file = close_fd_get_file(fd);
-#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(5,11,0))
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(5,10,0))
 	close_fd_get_file(fd, &twcb->file);
 #else
 	__close_fd_get_file(fd, &twcb->file);
@@ -2452,7 +2452,7 @@ static int binder_translate_binder(struct flat_binder_object *fp,
 		ret = -EINVAL;
 		goto done;
 	}
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,15,2))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,10,0))
 	if (security_binder_transfer_binder(proc->cred, target_proc->cred)) {
 #else
 	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
@@ -2502,7 +2502,7 @@ static int binder_translate_handle(struct flat_binder_object *fp,
 				  proc->pid, thread->pid, fp->handle);
 		return -EINVAL;
 	}
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,15,2))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,10,0))
 	if (security_binder_transfer_binder(proc->cred, target_proc->cred)) {
 #else
 	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
@@ -2594,7 +2594,7 @@ static int binder_translate_fd(u32 fd, binder_size_t fd_offset,
 		ret = -EBADF;
 		goto err_fget;
 	}
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,15,2))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,10,0))
 	ret = security_binder_transfer_file(proc->cred, target_proc->cred, file);
 #else
 	ret = security_binder_transfer_file(proc->tsk, target_proc->tsk, file);
@@ -2996,7 +2996,7 @@ static void binder_transaction(struct binder_proc *proc,
 			return_error_line = __LINE__;
 			goto err_invalid_target_handle;
 		}
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,15,2))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,10,0))
 		if (security_binder_transaction(proc->cred,
 						target_proc->cred) < 0) {
 #else
@@ -4952,7 +4952,7 @@ static int binder_ioctl_set_ctx_mgr(struct file *filp,
 		ret = -EBUSY;
 		goto out;
 	}
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,15,2))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,10,0))
 	ret = security_binder_set_context_mgr(proc->cred);
 #else
 	ret = security_binder_set_context_mgr(proc->tsk);
